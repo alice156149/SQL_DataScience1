@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?><sqlb_project><db path="C:/Users/myhie/OneDrive/Máy tính/data analysis/SQL/dataset/chinook/chinook.db" readonly="0" foreign_keys="1" case_sensitive_like="0" temp_store="0" wal_autocheckpoint="1000" synchronous="2"/><attached/><window><main_tabs open="structure browser pragmas query" current="3"/></window><tab_structure><column_width id="0" width="300"/><column_width id="1" width="0"/><column_width id="2" width="125"/><column_width id="3" width="5166"/><column_width id="4" width="0"/><expanded_item id="0" parent="1"/><expanded_item id="1" parent="1"/><expanded_item id="2" parent="1"/><expanded_item id="3" parent="1"/></tab_structure><tab_browse><current_table name="4,6:mainalbums"/><default_encoding codec=""/><browse_table_settings><table schema="main" name="albums" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_"><sort/><column_widths><column index="1" value="84"/><column index="2" value="300"/><column index="3" value="76"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table></browse_table_settings></tab_browse><tab_sql><sql name="SQL 1">-- Find the names of all the tracks for the album &quot;Californication&quot;
+SELECT Name
+FROM Tracks
+WHERE AlbumId IN (
+SELECT 
+AlbumId
+FROM Albums
+WHERE Title = 'Californication');
+
+-- Find the total number of invoices for each customer along with the customer's full name, city and email.
+SELECT FirstName, LastName, City, Email,
+(SELECT COUNT (*) AS [Num Of Invoices]
+FROM Invoices
+WHERE Invoices.CustomerId = Customers.CustomerId) AS [NumOfInvoices]
+FROM Customers;
+
+-- Retrieve the track name, album, artistID, and trackID for all the albums.
+SELECT Name,
+TrackId,
+(SELECT Title
+FROM Albums) AS Album,
+(SELECT ArtistId
+FROM Albums) AS artistId
+FROM Tracks
+WHERE
+TrackId = '12';
+
+-- Retrieve a list with the managers last name, and the last name of the employees who report to him or her.
+SELECT a.LastName AS ManagerLastName, b.LastName AS EmployeeLastName
+FROM Employees a, Employees b
+WHERE a.EmployeeId = b.ReportsTo;
+
+-- Find the name and ID of the artists who do not have albums
+SELECT Name AS Artist,
+ar.ArtistId AS Id,
+al.Title AS AlTitle
+FROM Artists ar
+LEFT JOIN Albums al
+ON ar.ArtistId = al.ArtistId
+WHERE AlTitle IS NULL;
+
+-- Use a UNION to create a list of all the employee's and customer's first names and last names ordered by the last name in descending order
+SELECT FirstName, LastName
+FROM Customers
+UNION
+SELECT FirstName, LastName
+FROM Employees
+ORDER BY LastName DESC;
+
+-- See if there are any customers who have a different city listed in their billing city versus their customer city
+SELECT C.FirstName,
+       C.LastName,
+       C.City AS CustomerCity,
+       I.BillingCity
+FROM Customers C
+INNER JOIN Invoices I
+ON C.CustomerId = I.CustomerId
+WHERE CustomerCity != BillingCity;</sql><current_tab id="0"/></tab_sql></sqlb_project>
